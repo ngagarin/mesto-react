@@ -1,121 +1,233 @@
+import '../index.css';
 import Header from './Header';
-import Main from './Main';
 import Footer from './Footer';
+import Main from './Main';
+import PopupWithForm from './PopupWithForm';
+import ImagePopup from './ImagePopup';
+import { useInput } from './FormValidator.js';
+
+import React from "react";
 
 function App() {
+  const [isEditProfilePopupOpen, setEditProfilePopupOpen] = React.useState(false)
+  const [isAddPlacePopupOpen, setAddPlacePopupOpen] = React.useState(false)
+  const [isEditAvatarPopupOpen, setEditAvatarPopupOpen] = React.useState(false)
+  const [selectedCard, setSelectedCard] = React.useState(null)
+
+  function handleEditAvatarClick() {
+    setEditAvatarPopupOpen(true);
+  };
+
+  function handleEditProfileClick() {
+    setEditProfilePopupOpen(true);
+  };
+
+  function handleAddPlaceClick() {
+    setAddPlacePopupOpen(true);
+  };
+
+  function handleCardClick(card) {
+    setSelectedCard(card);
+  }
+
+  function closeAllPopups() {
+    setEditProfilePopupOpen(false);
+    setAddPlacePopupOpen(false);
+    setEditAvatarPopupOpen(false);
+    setSelectedCard(null);
+  }
+
+  function resetValidations(...inputs) {
+    inputs.forEach((input) => {
+      input.resetValidation();
+    });
+  }
+
+  function handleClosePopups() {
+    resetValidations(title, about, login, picture, avatar);
+    closeAllPopups();
+  }
+
+  const title = useInput('', { isEmpty: true, minLength: 2 })
+  const about = useInput('', { isEmpty: true, minLength: 2 })
+  const login = useInput('', { isEmpty: true, minLength: 2 })
+  const picture = useInput('', { isEmpty: true, isUrl: true });
+  const avatar = useInput('', { isEmpty: true, isUrl: true });
+
   return (
-    <>
+    <div className="page">
       <Header />
-      <Main />
+
+      <Main
+        onEditProfile={handleEditProfileClick}
+        onEditAvatar={handleEditAvatarClick}
+        onAddPlace={handleAddPlaceClick}
+        onCardClick={handleCardClick}
+      />
+
       <Footer />
 
-      //Popups
+      <PopupWithForm
+        isOpen={isEditAvatarPopupOpen}
+        onClose={handleClosePopups}
+        name="edit-avatar"
+        title="Обновить аватар"
+        children={(
+          <>
+            <label className="form__item">
+              <input
+                onChange={e => avatar.onChange(e)}
+                onFocus={e => avatar.onFocus(e)}
+                value={avatar.value}
+                type="text"
+                className={`form__input ${avatar.isDirty && (avatar.isEmpty || avatar.urlError) ? "form__input_type_error" : ""}`}
+                placeholder="Ссылка на аватар"
+                name="avatar"
+                id="avatar-input"
+                required
+              />
+              {avatar.isDirty &&
+                (avatar.isEmpty
+                  ? <span className="form__input-error">Это обязательное поле</span>
+                  : (avatar.urlError && <span className="form__input-error">Здесь должна быть ссылка</span>)
+                )
+              }
+            </label>
 
-      // Popup edit profile info
-      <div className="popup popup_type_edit-profile">
-        <div className="popup__content">
-          <button className="popup__close-button popup__close-button_type_profile" type="button"
-            aria-label="Закрыть окно"></button>
-          <h2 className="popup__header">Редактировать профиль</h2>
-          <form className="form form_type_profile" id="editProfileForm" name="editProfileForm" novalidate>
-            <fieldset className="form__set">
-              <label className="form__item">
-                <input type="text" className="form__input form__input_type_name" placeholder="Имя" name="name" id="name-input"
-                  minlength="2" maxlength="40" required />
-                  <span className="form__input-error name-input-error"></span>
-              </label>
-              <label className="form__item">
-                <input type="text" className="form__input form__input_type_about" placeholder="Сфера деятельности" name="about"
-                  id="about-input" minlength="2" maxlength="200" required />
-                  <span className="form__input-error about-input-error"></span>
-              </label>
-              <button className="form__submit" type="submit" aria-label="Изменить информацию профайла">Сохранить</button>
-            </fieldset>
-          </form>
-        </div>
-      </div>
+            {(!avatar.inputValid) ?
+              <button className="form__submit form__submit_disabled" type="submit" disabled>Сохранить</button>
+              : <button className="form__submit" type="submit">Сохранить</button>}
+          </>
+        )}
+      />
 
-      //Popup add a card
-      <div className="popup popup_type_add-card">
-        <div className="popup__content">
-          <button className="popup__close-button popup__close-button_type_cards" type="button"
-            aria-label="Закрыть окно"></button>
-          <h2 className="popup__header">Новое место</h2>
-          <form className="form" id="editCardsForm" name="editCardsForm" novalidate>
-            <fieldset className="form__set">
-              <label className="form__item">
-                <input type="text" className="form__input form__input_type_title" placeholder="Название места" name="title"
-                  id="title-input" minlength="2" maxlength="30" required />
-                  <span className="form__input-error title-input-error"></span>
-              </label>
-              <label className="form__item">
-                <input type="url" className="form__input form__input_type_picture" placeholder="Ссылка на картинку"
-                  name="picture" id="picture-input" required />
-                  <span className="form__input-error picture-input-error"></span>
-              </label>
-              <button className="form__submit" type="submit" aria-label="Добавить карточку">Создать</button>
-            </fieldset>
-          </form>
-        </div>
-      </div>
+      <PopupWithForm
+        isOpen={isEditProfilePopupOpen}
+        onClose={handleClosePopups}
+        name='edit-profile'
+        title='Редактировать профиль'
+        children={
+          <>
+            <label className="form__item">
+              <input
+                onChange={e => login.onChange(e)}
+                onFocus={e => login.onFocus(e)}
+                value={login.value}
+                type="text"
+                className={`form__input ${login.isDirty && (login.isEmpty || login.minLengthError || login.maxLengthError) ? "form__input_type_error" : ""}`}
+                placeholder="Имя"
+                name="login"
+                id="name-input"
+                minLength="2"
+                maxLength="40"
+                required
+              />
+              {login.isDirty &&
+                (login.isEmpty
+                  ? <span className="form__input-error">Это обязательное поле</span>
+                  : ((login.minLengthError || login.maxLengthError) && <span className="form__input-error">Должно быть от 2 до 40 символов</span>)
+                )
+              }
+            </label>
+            <label className="form__item">
+              <input
+                onChange={e => about.onChange(e)}
+                onFocus={e => about.onFocus(e)}
+                value={about.value}
+                type="text"
+                className={`form__input ${about.isDirty && (about.isEmpty || about.minLengthError || about.maxLengthError) ? "form__input_type_error" : ""}`}
+                placeholder="Сфера деятельности"
+                name="about"
+                id="about-input"
+                minLength="2"
+                maxLength="200"
+                required
+              />
+              {about.isDirty &&
+                (about.isEmpty
+                  ? <span className="form__input-error">Это обязательное поле</span>
+                  : ((about.minLengthError || about.maxLengthError) && <span className="form__input-error">Должно быть от 2 до 200 символов</span>)
+                )
+              }
+            </label>
 
-      //Popup show pic
-      <div className="popup popup_type_image">
-        <figure className="popup__image-conteiner">
-          <button className="popup__close-button popup__close-button_type_image" type="button"
-            aria-label="Закрыть окно"></button>
-          <img src="#" alt="#" className="popup__image" />
-            <figcaption className="popup__image-caption">#</figcaption>
-        </figure>
-      </div>
+            {(!about.inputValid || !login.inputValid) ?
+              <button className="form__submit form__submit_disabled" type="submit" disabled>Сохранить</button>
+              : <button className="form__submit" type="submit">Сохранить</button>}
+          </>
+        }
+      />
 
-      //Popup update avatar
-      <div className="popup popup_type_edit-avatar">
-        <div className="popup__content">
-          <button className="popup__close-button popup__close-button_type_profile" type="button"
-            aria-label="Закрыть окно"></button>
-          <h2 className="popup__header">Обновить аватар</h2>
-          <form className="form form_type_avatar" id="editAvatar" name="editAvatar" novalidate>
-            <fieldset className="form__set">
-              <label className="form__item">
-                <input type="url" className="form__input form__input_type_avatar" placeholder="Ссылка на аватар" name="avatar"
-                  id="avatar-input" required />
-                  <span className="form__input-error avatar-input-error"></span>
-              </label>
-              <button className="form__submit" type="submit" aria-label="Изменить аватар">Сохранить</button>
-            </fieldset>
-          </form>
-        </div>
-      </div>
+      <PopupWithForm
+        isOpen={isAddPlacePopupOpen}
+        onClose={handleClosePopups}
+        name={'add-card'}
+        title={'Новое место'}
+        children={(
+          <>
+            <label className="form__item">
+              <input
+                type="text"
+                className={`form__input ${title.isDirty && (title.isEmpty || title.minLengthError || title.maxLengthError) ? "form__input_type_error" : ""}`}
+                placeholder="Название места"
+                name="title"
+                id="title-input"
+                minLength="2"
+                maxLength="30"
+                required
+                onChange={(e) => title.onChange(e)}
+                onFocus={(e) => title.onFocus(e)}
+                value={title.value}
+              />
+              {title.isDirty &&
+                (title.isEmpty
+                  ? <span className="form__input-error">Это обязательное поле</span>
+                  : ((title.minLengthError || title.maxLengthError) && <span className="form__input-error">Должно быть от 2 до 30 символов</span>)
+                )
+              }
+            </label>
+            <label className="form__item">
+              <input
+                type="text"
+                className={`form__input ${picture.isDirty && (picture.isEmpty || picture.urlError) ? "form__input_type_error" : ""}`}
+                placeholder="Ссылка на картинку"
+                name="picture"
+                id="picture-input"
+                required
+                onChange={(e) => picture.onChange(e)}
+                onFocus={(e) => picture.onFocus(e)}
+                value={picture.value}
+              />
+              {picture.isDirty &&
+                (picture.isEmpty
+                  ? <span className="form__input-error">Это обязательное поле</span>
+                  : (picture.urlError && <span className="form__input-error">Здесь должна быть ссылка</span>)
+                )
+              }
+            </label>
 
-      //Popup delete card
-      <div className="popup popup_type_delete-card">
-        <div className="popup__content">
-          <button className="popup__close-button popup__close-button_type_profile" type="button"
-            aria-label="Закрыть окно"></button>
-          <h2 className="popup__header">Вы уверены?</h2>
-          <form className="form form_type_delete-card" id="deleteCard" name="deleteCard" novalidate>
-            <button className="form__submit" type="submit" aria-label="Удалить карточку">Да</button>
-          </form>
-        </div>
-      </div>
+            {(!title.inputValid || !picture.inputValid) ?
+              <button className="form__submit form__submit_disabled" type="submit" disabled>Сохранить</button>
+              : <button className="form__submit" type="submit">Сохранить</button>}
+          </>
+        )}
+      />
 
-      // Card item
-      <template id="card">
-        <li className="card">
-          <img src="#" className="card__picture" alt="#" />
-            <div className="card__info">
-              <h2 className="card__title">#</h2>
-              <div>
-                <button className="card__like-button" type="button" aria-label="Поставить лайк">
-                </button>
-                <p className="card__likes-counter">#</p>
-              </div>
-            </div>
-            <button className="card__delete" type="button" aria-label="Удалить карточку"></button>
-        </li>
-      </template>
-    </>
+      <PopupWithForm
+        name={'delete-card'}
+        title={'Вы уверены?'}
+        children={(
+          <>
+          </>
+        )}
+      />
+
+      <ImagePopup
+        card={selectedCard}
+        onClose={closeAllPopups}
+      />
+
+    </div>
   );
 }
 

@@ -7,7 +7,9 @@
   border: none;
   border-radius: 50%;
   background: transparent;
-  transition: background-color 0.2s;
+  background-position: center;
+  background-repeat: no-repeat;
+  background-size: cover;
 }
 
 .profile__avatar-edit-button:hover {

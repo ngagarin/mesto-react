@@ -11,7 +11,7 @@
   outline: none;
   box-sizing: border-box;
   width: 100%;
-  margin-bottom: 30px;
+  margin-bottom: 5px;
 }
 
 @media screen and (max-width: 500px) {
