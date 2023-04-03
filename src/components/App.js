@@ -9,6 +9,9 @@ import { useInput } from './FormValidator.js';
 import React from "react";
 
 function App() {
+  const [userName, setUserName] = React.useState('');
+  const [userDescription, setUserDescription] = React.useState('');
+
   const [isEditProfilePopupOpen, setEditProfilePopupOpen] = React.useState(false)
   const [isAddPlacePopupOpen, setAddPlacePopupOpen] = React.useState(false)
   const [isEditAvatarPopupOpen, setEditAvatarPopupOpen] = React.useState(false)
@@ -37,6 +40,11 @@ function App() {
     setSelectedCard(null);
   }
 
+  const handleUserInfoChange = (name, about) => {
+    setUserName(name);
+    setUserDescription(about);
+  }
+
   function resetValidations(...inputs) {
     inputs.forEach((input) => {
       input.resetValidation();
@@ -59,6 +67,10 @@ function App() {
       <Header />
 
       <Main
+        onUserInfoChange={handleUserInfoChange}
+        userName={userName}
+        userDescription={userDescription}
+
         onEditProfile={handleEditProfileClick}
         onEditAvatar={handleEditAvatarClick}
         onAddPlace={handleAddPlaceClick}
@@ -115,7 +127,7 @@ function App() {
                 value={login.value}
                 type="text"
                 className={`form__input ${login.isDirty && (login.isEmpty || login.minLengthError || login.maxLengthError) ? "form__input_type_error" : ""}`}
-                placeholder="Имя"
+                placeholder={userName}
                 name="login"
                 id="name-input"
                 minLength="2"
@@ -136,7 +148,7 @@ function App() {
                 value={about.value}
                 type="text"
                 className={`form__input ${about.isDirty && (about.isEmpty || about.minLengthError || about.maxLengthError) ? "form__input_type_error" : ""}`}
-                placeholder="Сфера деятельности"
+                placeholder={userDescription}
                 name="about"
                 id="about-input"
                 minLength="2"
@@ -218,6 +230,7 @@ function App() {
         title={'Вы уверены?'}
         children={(
           <>
+            <button class="form__submit" type="submit" aria-label="Удалить карточку">Да</button>
           </>
         )}
       />
