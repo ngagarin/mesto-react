@@ -230,7 +230,7 @@ function App() {
         title={'Вы уверены?'}
         children={(
           <>
-            <button class="form__submit" type="submit" aria-label="Удалить карточку">Да</button>
+            <button className="form__submit" type="submit" aria-label="Удалить карточку">Да</button>
           </>
         )}
       />

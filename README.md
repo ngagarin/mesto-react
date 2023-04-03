@@ -19,7 +19,7 @@
 
 ### Просмотр сайта:
 
-Доступен на [GitHub pages](https://ngagarin.github.io/mesto)
+Доступен на [GitHub pages](https://ngagarin.github.io/mesto-react/)
 
 #### Инструкция по установке:
 

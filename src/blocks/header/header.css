@@ -1,5 +1,5 @@
 .header {
-  margin: 45px auto 0;
+  margin: 0 auto 0;
   max-width: 880px;
   min-width: 320px;
   width: calc(100% - 2 * 200px);
@@ -27,6 +27,5 @@
 @media screen and (max-width: 571px) {
   .header {
     width: 100%;
-    margin-top: 28px;
   }
 }
