@@ -10,4 +10,5 @@
   font-style: normal;
   position: relative;
   background-color: #000;
+  min-height: 100vh;
 }
