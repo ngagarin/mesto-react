@@ -19,27 +19,22 @@ function App() {
 
   function handleEditAvatarClick() {
     setEditAvatarPopupOpen(true);
-    document.documentElement.classList.add('page_type_hidden');
   };
 
   function handleEditProfileClick() {
     setEditProfilePopupOpen(true);
-    document.documentElement.classList.add('page_type_hidden');
   };
 
   function handleAddPlaceClick() {
     setAddPlacePopupOpen(true);
-    document.documentElement.classList.add('page_type_hidden');
   };
 
   function handleCardClick(card) {
     setSelectedCard(card);
-    document.documentElement.classList.add('page_type_hidden');
   }
 
   function closeAllPopups() {
     resetValidations(title, about, login, picture, avatar);
-    document.documentElement.classList.remove('page_type_hidden');
     setEditProfilePopupOpen(false);
     setAddPlacePopupOpen(false);
     setEditAvatarPopupOpen(false);

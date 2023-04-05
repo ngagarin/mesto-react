@@ -3,16 +3,12 @@ import { useEffect } from 'react';
 function PopupWithForm({ isOpen, onClose, onCloseEsc, onCloseOverlay, name, title, children, inputValid, submitText }) {
   useEffect(() => {
     if (isOpen) {
+      document.body.classList.add('page_type_hidden');
       document.addEventListener('keydown', onCloseEsc);
-    } else {
-      document.removeEventListener('keydown', onCloseEsc);
-    }
-  }, [isOpen])
-
-  useEffect(() => {
-    if (isOpen) {
       document.addEventListener('mousedown', onCloseOverlay);
     } else {
+      document.body.classList.remove('page_type_hidden');
+      document.removeEventListener('keydown', onCloseEsc);
       document.removeEventListener('mousedown', onCloseOverlay);
     }
   }, [isOpen])
