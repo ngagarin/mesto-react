@@ -1,7 +1,7 @@
-import {token, cohort} from './authorizationData'
+import { token, cohort } from './authorizationData'
 
 class Api {
-  constructor({baseUrl, headers}) {
+  constructor({ baseUrl, headers }) {
     this._headers = headers;
     this._baseUrl = baseUrl;
   }
