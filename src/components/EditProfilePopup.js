@@ -1,6 +1,6 @@
 import React from "react";
 import PopupWithForm from './PopupWithForm';
-import { useInput } from './FormValidator.js';
+import { useInput } from '../hooks/FormValidator.js';
 import { CurrentUserContext } from '../contexts/CurrentUserContext';
 
 
